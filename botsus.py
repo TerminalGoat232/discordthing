@@ -1,3 +1,4 @@
+# just source, not included lib cuz i'm to lazy to upload some specific lib i has made like FLIB
 import discord
 from discord import Member
 from discord.ext import commands, tasks
@@ -5,7 +6,7 @@ import os
 import random as rd
 import codecs
 import webbrowser as w 
-from on import live
+from on import live # just delete thí shit
 from discord.voice_client import VoiceClient
 import asyncio as asc
 import json as js
