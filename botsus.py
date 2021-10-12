@@ -499,5 +499,5 @@ async def doingstuff():
 		else: await cl.change_presence(activity=discord.Game(rd.choice(ngu)))
 
 live()
-tok = "ODc1Mjg2MzQ4OTUxNTkyOTgx.YRTT7w.GwPE4NRnGvMqoMcjtwaP4Wk1TKI"
+tok = "" #ur token herre
 cl.run(tok)
