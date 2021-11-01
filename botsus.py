@@ -1,4 +1,4 @@
-# just source, not included lib cuz i'm too lazy to upload some specific libs thingy, idk jknedsmnfldgkfthj
+# just source, not included lib cuz i'm too lazy to upload those specific libs thingy, idk jknedsmnfldgkfthj
 import discord
 from discord import Member
 from discord.ext import commands, tasks
