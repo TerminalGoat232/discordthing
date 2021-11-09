@@ -6,7 +6,7 @@ import os
 import random as rd
 import codecs
 import webbrowser as w 
-from on import live # just delete thí shit
+from on import live
 from discord.voice_client import VoiceClient
 import asyncio as asc
 import json as js
@@ -71,7 +71,7 @@ class MainPlay(discord.PCMVolumeTransformer):
 		return cls(discord.FFmpegPCMAudio(fname, **ffmpeg_options), data=data)
 
 a = ["Hi", "Hello", "Zdravstvuyte moya tovarishch", "Hemllo", "ok", ":>", 'hemllo', 'u r welcome', "lô"]
-ngu = ["Minecraft", ":l", "con chos", "Amongus", "Stardew Valley","Undertale","Deltarune","Getting over it","World of tank blitz"]
+ngu = ["Minecraft", ":l", "con chos", "Amongus", "Stardew Valley","Undertale","Deltarune","Getting over it","World of tanks blitz"]
 
 @cl.event
 async def on_ready():
@@ -91,6 +91,12 @@ async def on_ready():
     		await cl.get_channel(id = 887513361791717426).send("@everyone")
     		await cl.get_channel(id = 887513361791717426).send(embed=emb)
     	else: pass
+@cl.command(name="Help")
+async def Help(ctx):
+	emb = discord.Embed(
+		title="_*Bot commands*_ :", color=0xfbf8b7, description= (
+			"*AddEvent*: Add events or something, idk [<prefix>AddEvent [dd/mm] [event]] \n *PSList <position/song num>*: Play a specific song with their position in the playlist  \n *Plist*: Play the whole playlist \n *List <name/url>*: add a specific song into the playlist \n *EventToday*: Checking events today \n *Plug*: allow the bot to join into the voice chat \n *PauseM*: Pause music \n *ResP*: Resume \n *Pmus* <url/name>: Play music \n *Pagain*: Play music again \n *Loop* <inf/brk>: Looping a specific music <inf for forever/brk for breaks the loop> \n ||_still working on this command (help), idk it's just too much functions_|| "))
+	await ctx.send(embed=emb)
 @cl.command(name="AddEvent")
 async def AddEvent(ctx,date,event):
 	with open("evt.json","r") as wt:
@@ -168,7 +174,7 @@ async def Plug(ctx):
 		await vc.connect()
 @cl.command(name ="Pmus", pass_context=True)
 
-async def Pmus(ctx,*,lnk:str):
+async def Pmus(ctx,*,lnk:str): 
 	global volume1, lnk2
 	lnk2 = lnk
 	try:
@@ -365,12 +371,22 @@ async def PauseM(ctx):
 	abc = ctx.message.guild
 	vc = abc.voice_client
 	vc.pause()
-
+@cl.command(name="Tick")
+async def Tick(ctx):
+	a = int(cl.latency * 1000)
+	await ctx.send(f"Your ping is: {a} ms")
+	
 @cl.command(name="ResP")
 async def ResP(ctx):
 	abc1 = ctx.message.guild
 	vc = abc1.voice_client
 	vc.resume()
+
+@cl.command(name="Kill", pass_context=True)
+async def Kill(ctx):
+	await ctx.message.delete()
+	await ctx.send('*OOF*')
+	quit()
 
 @cl.command(name="StopP")
 async def StopP(ctx):
@@ -379,36 +395,28 @@ async def StopP(ctx):
 		vc =  ctx.message.guild.voice_client
 		await vc.disconnect()
 	except: return
-	
+# <Still working on....
 @cl.command(name="Vol")
 async def Vol(ctx, *,volum:float):
 	global volume1
-	
 	volume1 = volum
 	ctx.send("your volume is {volume1}%")
 	if 0 <= volume1 <= 100:
 		volume1 = volume1 / 100
 	else:
 		await ctx.send("limited volume unit is 100 and 0 ")
+@commands.has_permissions(manage_messages=True)
 @cl.command(name="EC", pass_context=True)
 async def EC(ctx, *, rep):
 	await ctx.message.delete()
 	await ctx.send(rep)
-@cl.command(name="Kill", pass_context=True)
-async def Kill(ctx):
-	await ctx.message.delete()
-	await ctx.send('*OOF*')
-	quit()
-@cl.command(name="Tick")
-async def Tick(ctx):
-	a = int(cl.latency * 1000)
-	await ctx.send(f"Your ping is: {a} ms")
+
 @cl.command(name="SaveList")
-async def SaveList(ctx):                                                                                                                #still working on...
+async def SaveList(ctx):                                                                                                          
 	pass
-	
+#/>
 
-
+ 
 @cl.event
 @has_permissions(kick_members = True)
 @commands.has_permissions(manage_messages=True)
@@ -500,5 +508,5 @@ async def doingstuff():
 		else: await cl.change_presence(activity=discord.Game(rd.choice(ngu)))
 
 live()
-tok = "" #ur token herre
+tok = <ur token goes here>
 cl.run(tok)
