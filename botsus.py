@@ -1,4 +1,3 @@
-# just source, not included lib cuz i'm too lazy to upload those specific libs thingy, idk jknedsmnfldgkfthj
 import discord
 from discord import Member
 from discord.ext import commands, tasks
@@ -71,7 +70,7 @@ class MainPlay(discord.PCMVolumeTransformer):
 		return cls(discord.FFmpegPCMAudio(fname, **ffmpeg_options), data=data)
 
 a = ["Hi", "Hello", "Zdravstvuyte moya tovarishch", "Hemllo", "ok", ":>", 'hemllo', 'u r welcome', "lô"]
-ngu = ["Minecraft", ":l", "con chos", "Amongus", "Stardew Valley","Undertale","Deltarune","Getting over it","World of tanks blitz"]
+ngu = ["Minecraft", ":l", "con chos", "Amongus", "Stardew Valley","Undertale","Deltarune","Getting over it","World of tanks blitz","YOUR MOM!","Crab Game","Muck","OwO","UwU","Prizmatic Shard"]
 
 @cl.event
 async def on_ready():
@@ -95,7 +94,24 @@ async def on_ready():
 async def Help(ctx):
 	emb = discord.Embed(
 		title="_*Bot commands*_ :", color=0xfbf8b7, description= (
-			"*AddEvent*: Add events or something, idk [<prefix>AddEvent [dd/mm] [event]] \n *PSList <position/song num>*: Play a specific song with their position in the playlist  \n *Plist*: Play the whole playlist \n *List <name/url>*: add a specific song into the playlist \n *EventToday*: Checking events today \n *Plug*: allow the bot to join into the voice chat \n *PauseM*: Pause music \n *ResP*: Resume \n *Pmus* <url/name>: Play music \n *Pagain*: Play music again \n *Loop* <inf/brk>: Looping a specific music <inf for forever/brk for breaks the loop> \n ||_still working on this command (help), idk it's just too much functions_|| "))
+			f"**AddEvent**: Add events or something, idk [<prefix>AddEvent [dd/mm] [event]] \n "
+			f"**PSList <position/song num>**: Play a specific song with their position in the playlist  \n" 
+			f"**Plist**: Play the whole playlist \n" 
+			f"**List <name/url>**: add a specific song into the playlist \n" 
+			f"**EventToday**: Checking events today \n" 
+			f"**Plug**: allow the bot to join into the voice chat \n" 
+			f"**PauseM**: Pause music \n" 
+			f"**ResP**: Resume \n" 
+			f"**Pmus** <url/name>: Play music \n" 
+			f"**Pagain**: Play music again \n" 
+			f"**Loop** <inf/brk>: Looping a specific music <inf for forever/brk for breaks the loop> \n" 
+			f"**StopP**: Stop playing music and left the voice chat\n"
+			f"**Var <url/song name>**: assign a secretly song into a [SECRET VARIBLE] \n"
+			f"**Pvar**: Play [SECRET VARIBLE] \n"
+			f"**WatchLs**: Show the song list \n"
+			f"**ReplaceIn <position> <url/song name>**: Replace a specific song with their position in the song list \n"
+			f"**EC <message>**: send your message as a bot \n"
+			f"||_still working on this command (Help), idk it's just too much functions_|| "))
 	await ctx.send(embed=emb)
 @cl.command(name="AddEvent")
 async def AddEvent(ctx,date,event):
@@ -355,7 +371,7 @@ async def List(ctx,*,lnk11):
 	await ctx.send(f"added {lnk11} to the song list")
 	
 @cl.command(name="ReplaceIn")
-async def ReplaceIn(ctx, pos1:int, lnk33:str):
+async def ReplaceIn(ctx, pos1:int, *,lnk33:str):
 	global Q
 	Q[pos1] = lnk33
 	await ctx.send(f"``` Replaced { Q[pos1] } with { lnk33} ")
@@ -373,8 +389,35 @@ async def PauseM(ctx):
 	vc.pause()
 @cl.command(name="Tick")
 async def Tick(ctx):
+	stt = time.monotonic()
+
+	msg = await ctx.send("[N]Pinging...")
+	send = time.monotonic() - stt
+
+	rac = time.monotonic()
+	await msg.add_reaction("\U0001f44d")
+	ract = time.monotonic() - rac 
+
+	edtt = time.monotonic()
+	await msg.edit(content="[Y]Pinging...")
+	edt = time.monotonic() - edtt
+
+	delt = time.monotonic()
+	await msg.delete()
+	deltt = time.monotonic() - delt
 	a = int(cl.latency * 1000)
-	await ctx.send(f"Your ping is: {a} ms")
+	await ctx.send(embed = discord.Embed(title="BONK! :l ", description=(
+																		f"**Send:** ```>_ { send*1000:.1f}ms ``` \n"
+																		f"**Bot Latency:** ```>_ { a}ms ``` \n"
+																		f"**Delete:** ```>_ { deltt*1000:.1f}ms ```\n"
+																		f"**React:** ```>_ { ract*1000:.1f}ms ```\n"
+																		f"**Edit:** ```>_ { edt*1000:.1f}ms ```\n"
+																			),color=0xffffd7))
+@commands.has_permissions(manage_messages=True)
+@cl.command(name="EC", pass_context=True)
+async def EC(ctx, *, rep):
+	await ctx.message.delete()
+	await ctx.send(rep)
 	
 @cl.command(name="ResP")
 async def ResP(ctx):
@@ -385,6 +428,8 @@ async def ResP(ctx):
 @cl.command(name="Kill", pass_context=True)
 async def Kill(ctx):
 	await ctx.message.delete()
+	vc =  ctx.message.guild.voice_client
+	await vc.disconnect()
 	await ctx.send('*OOF*')
 	quit()
 
@@ -396,20 +441,16 @@ async def StopP(ctx):
 		await vc.disconnect()
 	except: return
 # <Still working on....
-@cl.command(name="Vol")
-async def Vol(ctx, *,volum:float):
-	global volume1
-	volume1 = volum
-	ctx.send("your volume is {volume1}%")
-	if 0 <= volume1 <= 100:
-		volume1 = volume1 / 100
-	else:
-		await ctx.send("limited volume unit is 100 and 0 ")
-@commands.has_permissions(manage_messages=True)
-@cl.command(name="EC", pass_context=True)
-async def EC(ctx, *, rep):
-	await ctx.message.delete()
-	await ctx.send(rep)
+# @cl.command(name="Vol")
+# async def Vol(ctx, *,volum:float):
+# 	global volume1
+# 	volume1 = volum
+# 	ctx.send("your volume is {volume1}%")
+# 	if 0 <= volume1 <= 100:
+# 		volume1 = volume1 / 100
+# 	else:
+# 		await ctx.send("limited volume unit is 100 and 0 ")
+
 
 @cl.command(name="SaveList")
 async def SaveList(ctx):                                                                                                          
@@ -432,12 +473,12 @@ async def on_message(message):
 				if d[i] == b[j]:
 					k += 1
 					await message.delete()
-					await message.channel.send(f" {message.author.mention} NO BAD WORDS!!!!!!!, CAUTION:{k}")
+					await message.channel.send(f" {message.author.mention} NO BAD WORDS!!!!!!!, CAUTION(s):{k}")
 			for jk in range(0,len(StBd)):
 				if d[i] == StBd[jk]:
 					k += 1
 					await message.delete()
-					await message.channel.send(f" {message.author.mention} NO BAD WORDS!!!!!!!, CAUTION:{k}")
+					await message.channel.send(f" {message.author.mention} NO BAD WORDS!!!!!!!, CAUTION(s):{k}")
 		except: return
 		if k >= 10:
 			g = message.guild
@@ -470,7 +511,9 @@ async def on_message(message):
 		p1 = message.content[len('?SearchGG')+1:].format(message)
 		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.google.com/search?q={p1}')
 	if message.content.startswith('~ShutdownC'):
-		os.system('shutdown /s /t 1')
+		os.system('shutdown /s /t 10')
+		await message.delete()
+		await message.channel.send("i shat myself and i'm dying...")
 		print(message.content[len('~RunLk')+1:].format(message))
 	if message.content.startswith("?SPrefix"):
 		with open("prefix.json", "r") as c:
@@ -508,5 +551,5 @@ async def doingstuff():
 		else: await cl.change_presence(activity=discord.Game(rd.choice(ngu)))
 
 live()
-tok = <ur token goes here>
+tok = "ODc1Mjg2MzQ4OTUxNTkyOTgx.YRTT7w.wVz2nZLwlnE3Ez7gAZas_efZd7w"
 cl.run(tok)
