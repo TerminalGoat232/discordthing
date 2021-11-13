@@ -87,8 +87,8 @@ async def on_ready():
     		g = ''.join(list(mn['Events'][xk]))
     		
     		emb = discord.Embed(title = f"\ud83c\udf82 EVENT TODAY: {xk}", description=f"\ud83c\udf81 {g} \ud83c\udf82",color=0xfbf8b7)
-    		await cl.get_channel(id = 887513361791717426).send("@everyone")
-    		await cl.get_channel(id = 887513361791717426).send(embed=emb)
+    		await cl.get_channel(id = "ur channel id thingy").send("@everyone")
+    		await cl.get_channel(id ="ur channel id thingy").send(embed=emb)
     	else: pass
 @cl.command(name="Help")
 async def Help(ctx):
@@ -551,5 +551,5 @@ async def doingstuff():
 		else: await cl.change_presence(activity=discord.Game(rd.choice(ngu)))
 
 live()
-tok = "ODc1Mjg2MzQ4OTUxNTkyOTgx.YRTT7w.wVz2nZLwlnE3Ez7gAZas_efZd7w"
+tok = "" # ur token goes here
 cl.run(tok)
