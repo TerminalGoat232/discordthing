@@ -4,7 +4,7 @@ from discord.ext import commands, tasks
 import os
 import random as rd
 import codecs
-import webbrowser as w 
+import webbrowser as w #just delete this
 from on import live
 from discord.voice_client import VoiceClient
 import asyncio as asc
@@ -501,7 +501,7 @@ async def on_message(message):
 		await message.delete()
 		await message.channel.send('*OOF*')
 		quit()
-	if message.content.startswith('~RunLk='):
+	''' if message.content.startswith('~RunLk='):
 		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(message.content[len('~RunLk')+1:].format(message))
 		#print(message.content[len('~RunLk')+1:].format(message))
 	if message.content.startswith('?SearchYT='):
@@ -509,7 +509,7 @@ async def on_message(message):
 		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.youtube.com/results?search_query={p}')
 	if message.content.startswith('?SearchGG='):
 		p1 = message.content[len('?SearchGG')+1:].format(message)
-		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.google.com/search?q={p1}')
+		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.google.com/search?q={p1}') '''
 	if message.content.startswith('~ShutdownC'):
 		os.system('shutdown /s /t 10')
 		await message.delete()
