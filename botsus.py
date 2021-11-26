@@ -4,7 +4,7 @@ from discord.ext import commands, tasks
 import os
 import random as rd
 import codecs
-import webbrowser as w #just delete this
+import webbrowser as w 
 from on import live
 from discord.voice_client import VoiceClient
 import asyncio as asc
@@ -15,6 +15,8 @@ from FLIB import *
 import datetime as dt
 from datetime import date
 import time
+try: import serial 
+except: print("the serial library is optional")
 dl.utils.bug_reports_message = lambda: 'OOOoOOOoooOOOooooOoo'
 def getprf(cl,message):
 	with open("prefix.json", "r") as c:
@@ -69,27 +71,57 @@ class MainPlay(discord.PCMVolumeTransformer):
 		fname = data['url'] if Strm else ydl.prepare_filename(data)
 		return cls(discord.FFmpegPCMAudio(fname, **ffmpeg_options), data=data)
 
-a = ["Hi", "Hello", "Zdravstvuyte moya tovarishch", "Hemllo", "ok", ":>", 'hemllo', 'u r welcome', "lô"]
-ngu = ["Minecraft", ":l", "con chos", "Amongus", "Stardew Valley","Undertale","Deltarune","Getting over it","World of tanks blitz","YOUR MOM!","Crab Game","Muck","OwO","UwU","Prizmatic Shard"]
+a = ["Hi", "Hello", "Zdravstvuyte", "Hemllo", "ok", ":>", 'hemllo', 'u r welcome', "lô"]
+ngu = ["Minecraft","0xfbf8b7","Nothing", ":l", "con chos", "Amongus", "Mountaindew Valley","Undertale","Deltarune","Getting over that shit","amongus fly by ;]","YOUR MOM!","Crab Game","Muck","OwO","UwU","Prizmatic Shard"]
 
 @cl.event
 async def on_ready():
     print('i have login as {0.user}'.format(cl))
     print("console.log")
     doingstuff.start()
-    with open("evt.json","r") as m:
-    	mn = js.load(m)
-    dtt = date.today()
-    xk = dtt.strftime("%m/%d")
-    for fh in range(0,len(mn["Events"])):
-    	# print(list(mn["Events"])[fh])
-    	if xk == list(mn["Events"])[fh]:
-    		g = ''.join(list(mn['Events'][xk]))
+    await CheckEvents()
+    # with open("evt.json","r") as m:
+    # 	mn = js.load(m)
+    # dtt = date.today()
+    # xk = dtt.strftime("%m/%d")
+    # for fh in range(0,len(mn["Events"])):
+    # 	# print(list(mn["Events"])[fh])
+    # 	if xk == list(mn["Events"])[fh]:
+    # 		g = ''.join(list(mn['Events'][xk]))
     		
-    		emb = discord.Embed(title = f"\ud83c\udf82 EVENT TODAY: {xk}", description=f"\ud83c\udf81 {g} \ud83c\udf82",color=0xfbf8b7)
-    		await cl.get_channel(id = "ur channel id thingy").send("@everyone")
-    		await cl.get_channel(id ="ur channel id thingy").send(embed=emb)
-    	else: pass
+    # 		emb = discord.Embed(title = f"\ud83c\udf82 EVENT TODAY: {xk}", description=f"\ud83c\udf81 {g} \ud83c\udf82",color=0xfbf8b7)
+    # 		await cl.get_channel(id = 887513361791717426).send("@everyone")
+    # 		await cl.get_channel(id = 887513361791717426).send(embed=emb)
+    # 	else: pass
+medvar = 1
+async def CheckEvents():
+	global medvar
+	while 1:
+		# print(">_", medvar)
+		with open("evt.json","r") as m: mn = js.load(m)
+		dtt = date.today()
+		xk = dtt.strftime("%m/%d")
+		ff = list(xk)
+		# print(xk)
+		for fh in range(0,len(mn["Events"])):   
+			gg = list(list(mn["Events"])[fh])
+			if xk == list(mn["Events"])[fh] and medvar == 1 : #str
+				g = ''.join(list(mn['Events'][xk]))
+				emb = discord.Embed(title = f"\ud83c\udf82 EVENT TODAY: {xk}", description=f"\ud83c\udf81 {g} \ud83c\udf82",color=0xfbf8b7)
+    			# await cl.get_channel(id = 887513361791717426).send("@everyone")
+				await cl.get_channel(id = 887513361791717426).send(embed=emb)
+				for x in range(0, len(ff)):
+					try:
+						mc = int(ff[4])+1
+						ff[4] = str(mc)
+						break
+					except:pass
+			else: pass
+		if xk != ''.join(ff):medvar = 0
+		elif xk == ff: medvar = 1
+		# print(''.join(ff))
+		await asc.sleep(5)
+		
 @cl.command(name="Help")
 async def Help(ctx):
 	emb = discord.Embed(
@@ -161,7 +193,7 @@ async def mute(ctx, member: discord.Member, *, reason):
     embed.add_field(name="reason:", value=reason, inline=False)
     await ctx.send(embed=embed)
     await member.add_roles(mutedRole, reason=reason)
-    await member.send(f" you have been muted from: {guild.name} reason: {reason}")
+    await member.send(f"muted by: {guild.name} reason: {reason}")
 @cl.command(name="AddBadw")
 async def AddBadw(ctx,*,badw:str):
 	global StBd
@@ -188,29 +220,33 @@ async def Plug(ctx):
 	else:
 		vc = ctx.message.author.voice.channel
 		await vc.connect()
-@cl.command(name ="Pmus", pass_context=True)
 
+@cl.command(name ="Pmus", pass_context=True)
 async def Pmus(ctx,*,lnk:str): 
 	global volume1, lnk2
 	lnk2 = lnk
+	async def Pmus():
+		server = ctx.message.guild
+		voice_channel = server.voice_client
+		async with ctx.typing():
+			player = await MainPlay.furl(lnk, loop=cl.loop)
+			voice_channel.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
+		await ctx.send('** Now playing:** {} :musical_note:  '.format(player.tit))
 	try:
 		if not ctx.message.author.voice:
+			
 			await ctx.send("connect to voice channel first [Use <Prefix>Plug to connect da bot]")
 			return
 		else:
-			server = ctx.message.guild
-			voice_channel = server.voice_client
-			# for F in Q:
-			# 	if Q[F] != []:
-			# 		Q[F].pop(0)
+			try:
+				vc = ctx.message.author.voice.channel
+				await vc.connect()
+				await Pmus()
 
-			async with ctx.typing():
-			    player = await MainPlay.furl(lnk, loop=cl.loop)
-			    voice_channel.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
-			    
-		await ctx.send('** Now playing:** {} :musical_note:  '.format(player.tit))
+			except:
+				await Pmus()
 	except: pass
-	finally: return
+
 @cl.command(name ="PSList", pass_context=True)
 async def PSList(ctx, pos:int):
 	global Q,lnk2
@@ -262,7 +298,7 @@ async def Plist(ctx):
 					pos -= 1
 					pass
 					# print(pos) 
-				time.sleep(0.5)
+				await asc.sleep(.5)
 				
 	except: pass
 	finally: return
@@ -288,7 +324,7 @@ async def Prefix(ctx, prf:str):
 		prefx[str(ctx.guild.id)] = prf
 		with open("prefix.json", "w") as c:
 			js.dump(prefx,c,indent=5)
-		await ctx.send(f"*@everyone : changed prefix to {prf}*")
+		await ctx.send(f"*changed prefix to {prf}*")
 	else:
 		await ctx.send("**only accept prefix as a symbol or character**")
 #Coiashdoidhoioiscoiscsndnclkdmclkcmlmcccccccccccccccccccccccccccccccccccccc
@@ -359,7 +395,7 @@ async def Loop(ctx, t:str):
 				# await ctx.send('the loop has been broken')
 				break
 		except: pass
-		time.sleep(0.1)
+		await asc.sleep(.1)
 @cl.command(name="List")
 async def List(ctx,*,lnk11):
 	global Q
@@ -387,11 +423,13 @@ async def PauseM(ctx):
 	abc = ctx.message.guild
 	vc = abc.voice_client
 	vc.pause()
-@cl.command(name="Tick")
-async def Tick(ctx):
+sttcolor = 0
+@cl.command(name="TicB")
+async def TicB(ctx):
+	global sttcolor
 	stt = time.monotonic()
 
-	msg = await ctx.send("[N]Pinging...")
+	msg = await ctx.send("[0]Pinging...")
 	send = time.monotonic() - stt
 
 	rac = time.monotonic()
@@ -399,20 +437,29 @@ async def Tick(ctx):
 	ract = time.monotonic() - rac 
 
 	edtt = time.monotonic()
-	await msg.edit(content="[Y]Pinging...")
+	await msg.edit(content="[1]Pinging...")
 	edt = time.monotonic() - edtt
 
 	delt = time.monotonic()
 	await msg.delete()
 	deltt = time.monotonic() - delt
 	a = int(cl.latency * 1000)
-	await ctx.send(embed = discord.Embed(title="BONK! :l ", description=(
-																		f"**Send:** ```>_ { send*1000:.1f}ms ``` \n"
-																		f"**Bot Latency:** ```>_ { a}ms ``` \n"
-																		f"**Delete:** ```>_ { deltt*1000:.1f}ms ```\n"
-																		f"**React:** ```>_ { ract*1000:.1f}ms ```\n"
-																		f"**Edit:** ```>_ { edt*1000:.1f}ms ```\n"
-																			),color=0xffffd7))
+	nw = dt.datetime.utcnow()
+	ave = round((1000*(send+deltt+ract+edt)+a)/5)
+	print("average ping >_ ", ave)
+	if ave <= 500: sttcolor = 0xbff9d2 #stronk
+	elif ave > 500 and ave <= 1500: sttcolor = 0xffffd7 #nỏm
+	elif ave > 1500: sttcolor = 0xff8c8c #weamk 
+	await ctx.send(
+		embed = discord.Embed(
+			title="BONK! :l ", description=(
+				f"**Send:** ```>_ { send*1000:.1f}ms ``` \n"
+				f"**Bot Latency:** ```>_ { a}ms ``` \n"
+				f"**Delete:** ```>_ { deltt*1000:.1f}ms ```\n"
+				f"**React:** ```>_ { ract*1000:.1f}ms ```\n"
+				f"**Edit:** ```>_ { edt*1000:.1f}ms ```\n"
+				f"_Finished: {nw}_"
+				),color=sttcolor))
 @commands.has_permissions(manage_messages=True)
 @cl.command(name="EC", pass_context=True)
 async def EC(ctx, *, rep):
@@ -428,8 +475,10 @@ async def ResP(ctx):
 @cl.command(name="Kill", pass_context=True)
 async def Kill(ctx):
 	await ctx.message.delete()
-	vc =  ctx.message.guild.voice_client
-	await vc.disconnect()
+	try:
+		vc =  ctx.message.guild.voice_client
+		await vc.disconnect()
+	except: pass
 	await ctx.send('*OOF*')
 	quit()
 
@@ -501,7 +550,7 @@ async def on_message(message):
 		await message.delete()
 		await message.channel.send('*OOF*')
 		quit()
-	''' if message.content.startswith('~RunLk='):
+	if message.content.startswith('~RunLk='):
 		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(message.content[len('~RunLk')+1:].format(message))
 		#print(message.content[len('~RunLk')+1:].format(message))
 	if message.content.startswith('?SearchYT='):
@@ -509,7 +558,7 @@ async def on_message(message):
 		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.youtube.com/results?search_query={p}')
 	if message.content.startswith('?SearchGG='):
 		p1 = message.content[len('?SearchGG')+1:].format(message)
-		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.google.com/search?q={p1}') '''
+		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.google.com/search?q={p1}')
 	if message.content.startswith('~ShutdownC'):
 		os.system('shutdown /s /t 10')
 		await message.delete()
@@ -548,8 +597,8 @@ async def doingstuff():
 			g = ''.join(list(mn['Events'][xk]))
 			# print(g)
 			await cl.change_presence(activity=discord.Game(f' \ud83c\udf82 !!EVENT TODAY!!: {g} '))
-		else: await cl.change_presence(activity=discord.Game(rd.choice(ngu)))
+		elif xk != list(mn["Events"])[fh] : await cl.change_presence(activity=discord.Game(rd.choice(ngu)))
 
 live()
-tok = "" # ur token goes here
+tok = "ur tok here"
 cl.run(tok)
