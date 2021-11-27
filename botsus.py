@@ -499,15 +499,66 @@ async def StopP(ctx):
 # 		volume1 = volume1 / 100
 # 	else:
 # 		await ctx.send("limited volume unit is 100 and 0 ")
-
-
 @cl.command(name="SaveList")
 async def SaveList(ctx):                                                                                                          
 	pass
 #/>
 
+''' phân [fun] '''
+#convert thingy
+@cl.command(name="STR2ASCII")
+async def STR2ASCII(ctx,*, txt:str):
+	c = ''
+	for chim in txt:
+		v = str(ord(chim))
+		c += v+' '
+	await ctx.send(embed=discord.Embed(title="Here's your output [TEXT --> ASCII]:", 
+		description=f"```>_ {c}```",
+		color=0xfbf8b7))
+@cl.command(name="ASCII2STR")
+async def ASCII2STR(ctx,*,ASCII:str):
+	cc=''
+	ASCII11 = ASCII.replace(' ',',')
+	ASCII1 = ASCII11.split(',')
+	for ASCII2 in ASCII1:
+		cvrt = chr(int(ASCII2))
+		cc += cvrt
+	await ctx.send(embed=discord.Embed(title="Here's your output [ASCII --> TEXT]:", 
+		description=f"```>_ {cc}```",
+		color=0xfbf8b7))
+@cl.command(name="STR2BIN")
+async def STR2BIN(ctx,*,txt1):
+	cc2 = ''
+	for ch in txt1:
+		vv  = str(bin(ord(ch)))
+		vv1  = list(vv)
+		for x in range(0,2):
+			vv1[x] = ''
+		vvx = ''.join(vv1)
+		cc2 += vvx+' '
+	await ctx.send(embed=discord.Embed(title="Here's your output [TEXT --> BINARY]:", 
+		description=f"```>_ {cc2}```",
+		color=0xfbf8b7))
+@cl.command(name="BIN2STR")
+async def BIN2STR(ctx,*,bi):
+	cc3=''
+	result=''
+	b1 = bi.replace(' ',',').split(',')
+	for k in b1:
+		c1 = "0b"+k
+		cc3 += c1+','
+	ub = cc3.split(',')
+	for bb in ub:
+		try:
+			fx = ''.join(bb)
+			cvbt = chr(int(fx[:0xFF].encode("UTF-8"),2))
+			result += cvbt
+		except:pass
+	await ctx.send(embed=discord.Embed(title="Here's your output [BINARY --> TEXT]:", 
+		description=f"```>_ {result}```",
+		color=0xfbf8b7))
  
-@cl.event
+@cl.event 
 @has_permissions(kick_members = True)
 @commands.has_permissions(manage_messages=True)
 async def on_message(message):
@@ -600,5 +651,5 @@ async def doingstuff():
 		elif xk != list(mn["Events"])[fh] : await cl.change_presence(activity=discord.Game(rd.choice(ngu)))
 
 live()
-tok = "ur tok here"
+tok = "ur token goes here"
 cl.run(tok)
