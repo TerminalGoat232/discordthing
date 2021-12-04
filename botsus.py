@@ -9,6 +9,8 @@ from on import live
 from discord.voice_client import VoiceClient
 import asyncio as asc
 import json as js
+from math import *
+from numpy import *
 import youtube_dl as dl
 from discord.ext.commands import has_permissions, bot_has_permissions
 from FLIB import *
@@ -35,7 +37,9 @@ formatoptun = {
     'quiet': True,
     'no_warnings': True,
     'default_search': 'auto',
-    'source_address': '0.0.0.0' 
+    'source_address': '0.0.0.0', 
+    "preferredcodec": "mp3",
+    "preferredquality" : "192",
 }
 
 ffmpeg_options = {
@@ -47,6 +51,7 @@ ydl = dl.YoutubeDL(formatoptun)
 k = 0
 volume1 = 1
 StBd = []
+exc = 1
 Q = []
 lnk2 = ''
 with codecs.open('badwords.txt', 'r', 'utf8') as F:
@@ -107,7 +112,10 @@ async def CheckEvents():
 			gg = list(list(mn["Events"])[fh])
 			if xk == list(mn["Events"])[fh] and medvar == 1 : #str
 				g = ''.join(list(mn['Events'][xk]))
-				emb = discord.Embed(title = f"\ud83c\udf82 EVENT TODAY: {xk}", description=f"\ud83c\udf81 {g} \ud83c\udf82",color=0xfbf8b7)
+				emb = discord.Embed(
+					title = f"\ud83c\udf82 EVENT TODAY: {xk}", 
+					description=f"\ud83c\udf81 {g} \ud83c\udf82",
+					color=0xfbf8b7)
     			# await cl.get_channel(id = 887513361791717426).send("@everyone")
 				await cl.get_channel(id = 887513361791717426).send(embed=emb)
 				for x in range(0, len(ff)):
@@ -121,39 +129,40 @@ async def CheckEvents():
 		elif xk == ff: medvar = 1
 		# print(''.join(ff))
 		await asc.sleep(5)
-		
-@cl.command(name="Help")
-async def Help(ctx):
+cl.remove_command("help")
+@cl.command(name="help")
+async def help(ctx):
 	emb = discord.Embed(
-		title="_*Bot commands*_ :", color=0xfbf8b7, description= (
-			f"**AddEvent**: Add events or something, idk [<prefix>AddEvent [dd/mm] [event]] \n "
-			f"**PSList <position/song num>**: Play a specific song with their position in the playlist  \n" 
-			f"**Plist**: Play the whole playlist \n" 
-			f"**List <name/url>**: add a specific song into the playlist \n" 
-			f"**EventToday**: Checking events today \n" 
-			f"**Plug**: allow the bot to join into the voice chat \n" 
-			f"**PauseM**: Pause music \n" 
-			f"**ResP**: Resume \n" 
-			f"**Pmus** <url/name>: Play music \n" 
-			f"**Pagain**: Play music again \n" 
-			f"**Loop** <inf/brk>: Looping a specific music <inf for forever/brk for breaks the loop> \n" 
-			f"**StopP**: Stop playing music and left the voice chat\n"
-			f"**Var <url/song name>**: assign a secretly song into a [SECRET VARIBLE] \n"
-			f"**Pvar**: Play [SECRET VARIBLE] \n"
-			f"**WatchLs**: Show the song list \n"
-			f"**ReplaceIn <position> <url/song name>**: Replace a specific song with their position in the song list \n"
-			f"**EC <message>**: send your message as a bot \n"
-			f"||_still working on this command (Help), idk it's just too much functions_|| "))
+		title="_*Bot commands*_ :", color=0xfbf8b7, 
+		description= f"_Made By TerminalGoat#0948_\n [[{dt.datetime.utcnow()}]]",
+		)
+	emb.set_image(url='https://media.discordapp.net/attachments/875326852418371605/916594141360709642/z.png')
+	emb.add_field(
+		name="**Moderation:**",
+		value=f"```re\n> mute\n> unmute\n> kick\n> AddBadw\n```\n **Event [Still working on]:**\n ```re\n> AddEvent[datetime][event]\n> EventToday\n```\n**Math:**\n```re\n> Math[Eq]\n> STR2ASCII[texts]\n> STR2BIN[texts]\n> ASCII2STR[ASCII]\n> BIN2STR[Binary]\n```\n ")
+	emb.add_field(
+		name="**Music:**",
+		value=f"```re\n> Plug[it's trash now]\n> Pmus[song name]\n> List[song name]\n> Plist\n> var[song name]\n> Pvar\n> StopP\n> Loop[inf/brk]\n> Resp\n> PauseM\n> ReplaceIn[pos][new song]\n> PSlist[pos]\n> WatchLs\n```")
+	emb.add_field(
+		name="**Misc:**",
+		value="```re\n> RNG [min][max]\n> EC  [messages]\n> TicB\n> Reverse [texts]\n```"
+		)
+	emb.add_field(
+		name="Info",
+		value="```re\n> help [show this commands board]\n> ?SPrefix ( show SERVERS prefixs >;] ) \n```"
+		)
 	await ctx.send(embed=emb)
 @cl.command(name="AddEvent")
-async def AddEvent(ctx,date,event):
+async def AddEvent(ctx,date,*,event):
 	with open("evt.json","r") as wt:
 		mn = js.load(wt)
 		dr = f"{date}"
-		evt2 = FindRplChar(event,"-"," ")
-		cx = f"{evt2}"
+		# evt2 = FindRplChar(event,"-"," ")
+		cx = f"{event}"
 	mn["Events"].update({dr:cx})
-	await ctx.send(embed = discord.Embed(title="** ADDED NEW EVENT:**", description=f"```\n {evt2} \n```"))
+	await ctx.send(embed = discord.Embed(
+		title="** ADDED NEW EVENT:**",
+		description=f"```\n {event} \n```"))
 	with open("evt.json","w") as wr:
 		js.dump(mn,wr,indent=4)
 @cl.command(name="EventToday")
@@ -167,11 +176,14 @@ async def EventToday(ctx):
 		if xk == list(mn["Events"])[fh]:
 			g = ''.join(list(mn['Events'][xk]))
 			chl = cl.get_channel('887513361791717426')
-			emb = discord.Embed(title = "*EVENT TODAY :*", description=f"```\n\n\n  {g} \n\n\n ```", color=0xfbf8b7)
+			emb = discord.Embed(
+				title = "*EVENT TODAY :*", 
+				description=f"```\n\n\n  {g} \n\n\n ```", 
+				color=0xfbf8b7)
 			await ctx.send( embed = emb )
-@cl.command(name='Unmute')
+@cl.command(name='unmute')
 @commands.has_permissions(manage_messages=True)
-async def Unmute(ctx, member: discord.Member):
+async def unmute(ctx, member: discord.Member):
    mutedRole = discord.utils.get(ctx.guild.roles, name="eats shit")
 
    await member.remove_roles(mutedRole)
@@ -188,8 +200,14 @@ async def mute(ctx, member: discord.Member, *, reason):
         mutedRole = await guild.create_role(name="ngu")
 
         for channel in guild.channels:
-            await channel.set_permissions(mutedRole, speak=False, send_messages=False, read_message_history=True, read_messages=False)
-    embed = discord.Embed(title="*ANOUNCEMENT!*", description=f"{member.mention} has been muted ", colour=discord.Colour.red())
+            await channel.set_permissions(mutedRole,
+             speak=False,
+             send_messages=False, 
+             read_message_history=True,
+             read_messages=False)
+    embed = discord.Embed(title="*ANNOUNCEMENT!*",
+     description=f"{member.mention} has been muted ",
+     colour=discord.Colour.red())
     embed.add_field(name="reason:", value=reason, inline=False)
     await ctx.send(embed=embed)
     await member.add_roles(mutedRole, reason=reason)
@@ -270,13 +288,13 @@ pos = -1
 
 @cl.command(name="Plist")
 async def Plist(ctx):
-	global Q,pos
+	global Q,pos,exc
 	try:
 		if not ctx.message.author.voice:
 			await ctx.send("connect to voice channel first [Use <Prefix>Plug to connect da bot]")
 			return
 		else:
-			while 1:
+			while exc:
 				try:
 				
 					pos += 1
@@ -293,6 +311,7 @@ async def Plist(ctx):
 					if pos > len(Q):
 						await ctx.send("OUT OF SONG")
 						pos = -1
+
 						break
 				except: 
 					pos -= 1
@@ -368,22 +387,22 @@ v = 0
 @cl.command(name="Loop")
 
 async def Loop(ctx, t:str):
-
-	
-	global lnk2, f,v
+	global lnk2, f,v,exc
 	sound = cl.voice_clients
-	
 	if t.lower() == "inf":
 		f = 1
-		emb = discord.Embed(description=f"LOOPING {lnk2} forever", color= 0xc6fea0)	
+		emb = discord.Embed(description=f"LOOPING the current song ", color= 0xc6fea0)	
 		await ctx.send(embed=emb)
 		v = 0
 	if t.lower() == "brk":
 		v = 1
 		f = 0
-		await ctx.send('the loop has been broken')
+		emb1 = discord.Embed(description=f"```diff\n The loop has been broken ```", color= 0xc6fea0)	
+		await ctx.send(embed=emb1)
 		print(f)
 		print(v)
+
+	
 	while f:
 		try:
 			server = ctx.message.guild
@@ -420,8 +439,11 @@ async def  WatchLs(ctx):
 
 @cl.command(name="PauseM")
 async def PauseM(ctx):
+	global exc
 	abc = ctx.message.guild
 	vc = abc.voice_client
+	exc = 0
+	print(exc)
 	vc.pause()
 sttcolor = 0
 @cl.command(name="TicB")
@@ -468,6 +490,8 @@ async def EC(ctx, *, rep):
 	
 @cl.command(name="ResP")
 async def ResP(ctx):
+	global exc
+	exc = 1
 	abc1 = ctx.message.guild
 	vc = abc1.voice_client
 	vc.resume()
@@ -479,9 +503,8 @@ async def Kill(ctx):
 		vc =  ctx.message.guild.voice_client
 		await vc.disconnect()
 	except: pass
-	await ctx.send('*OOF*')
+	# await ctx.send('*OOF*')
 	quit()
-
 @cl.command(name="StopP")
 async def StopP(ctx):
 	try:
@@ -494,7 +517,7 @@ async def StopP(ctx):
 # async def Vol(ctx, *,volum:float):
 # 	global volume1
 # 	volume1 = volum
-# 	ctx.send("your volume is {volume1}%")
+# 	ctx.send(" Volume set: {volume1}%")
 # 	if 0 <= volume1 <= 100:
 # 		volume1 = volume1 / 100
 # 	else:
@@ -513,7 +536,7 @@ async def STR2ASCII(ctx,*, txt:str):
 		v = str(ord(chim))
 		c += v+' '
 	await ctx.send(embed=discord.Embed(title="Here's your output [TEXT --> ASCII]:", 
-		description=f"```>_ {c}```",
+		description=f"```py\n >_ {c}```",
 		color=0xfbf8b7))
 @cl.command(name="ASCII2STR")
 async def ASCII2STR(ctx,*,ASCII:str):
@@ -524,7 +547,7 @@ async def ASCII2STR(ctx,*,ASCII:str):
 		cvrt = chr(int(ASCII2))
 		cc += cvrt
 	await ctx.send(embed=discord.Embed(title="Here's your output [ASCII --> TEXT]:", 
-		description=f"```>_ {cc}```",
+		description=f"```py\n >_ {cc}```",
 		color=0xfbf8b7))
 @cl.command(name="STR2BIN")
 async def STR2BIN(ctx,*,txt1):
@@ -537,7 +560,7 @@ async def STR2BIN(ctx,*,txt1):
 		vvx = ''.join(vv1)
 		cc2 += vvx+' '
 	await ctx.send(embed=discord.Embed(title="Here's your output [TEXT --> BINARY]:", 
-		description=f"```>_ {cc2}```",
+		description=f"```py\n >_ {cc2}```",
 		color=0xfbf8b7))
 @cl.command(name="BIN2STR")
 async def BIN2STR(ctx,*,bi):
@@ -555,15 +578,46 @@ async def BIN2STR(ctx,*,bi):
 			result += cvbt
 		except:pass
 	await ctx.send(embed=discord.Embed(title="Here's your output [BINARY --> TEXT]:", 
-		description=f"```>_ {result}```",
+		description=f" ```py\n >_ {result}```",
 		color=0xfbf8b7))
- 
+@cl.command(name="Math")
+async def Math(ctx,*,val):
+	calc = eval(val)
+	await ctx.send(embed=discord.Embed(title="Here's your calculation result:", 
+		description=f"```py\n >_ {calc}```",
+		color=0x48f898))
+@cl.command(name="Reverse")
+async def Reverse(ctx,*,wd):
+	await ctx.send(f"{wd[::-1]}")
+@cl.command(name="RNG")
+async def RNG(ctx,fro:int,to:int):
+	RNG = rd.randint(fro,to)
+	cc = await ctx.send(embed=discord.Embed(title=f"Here's your random number [FROM {fro} to {to}]:", 
+		description=f" ```py\n >_ {RNG}```",
+		color=0xfbf8b7))
+	await cc.add_reaction("🔁")
+	def refresh(rec,u):
+		return u != cl.user and str(rec.emoji) == "🔁"
+	while 1:
+		try:
+			rec, u = await cl.wait_for("reaction_add", check=refresh, timeout=1)
+			if str(rec.emoji) == '🔁':
+				RNG = rd.randint(fro,to)
+				emb = discord.Embed(title=f"Here's your random number [FROM {fro} to {to}]:", 
+				description=f" ```py\n >_ {RNG}```",
+				color=0xfbf8b7)
+				await cc.edit(embed = emb)
+				await cc.remove_reaction("🔁",u)
+
+		except asc.TimeoutError:
+			await cc.remove_reaction("🔁",ctx.author)
+		except: pass
 @cl.event 
 @has_permissions(kick_members = True)
 @commands.has_permissions(manage_messages=True)
 async def on_message(message):
 	global  k,b, StBd
-	
+	  
 	inp = message.content 
 	d = list(inp.strip().lower().split(' '))
 	for i in range(0,len(d)):
@@ -599,7 +653,7 @@ async def on_message(message):
 
 	if message.content.lower() == "!wake":
 		await message.delete()
-		await message.channel.send('*OOF*')
+
 		quit()
 	if message.content.startswith('~RunLk='):
 		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(message.content[len('~RunLk')+1:].format(message))
@@ -618,7 +672,7 @@ async def on_message(message):
 	if message.content.startswith("?SPrefix"):
 		with open("prefix.json", "r") as c:
 			prefx = js.load(c)
-		emb = discord.Embed(title = "*CHECKING SERVER PREFIX*", description=f"```Server Prefix (JSON): {prefx} ```", color=0xfbf8b7)
+		emb = discord.Embed(title = "*CHECKING SERVER(S) PREFIX*", description=f"```Server Prefix (JSON): {prefx} ```", color=0xfbf8b7)
 		await message.channel.send(embed=emb)
 	if message.content.startswith("birthday"):
 		with open("evt.json","r") as wt:
@@ -651,5 +705,6 @@ async def doingstuff():
 		elif xk != list(mn["Events"])[fh] : await cl.change_presence(activity=discord.Game(rd.choice(ngu)))
 
 live()
-tok = "ur token goes here"
+with open("tok.txt","r") as t:
+	for x in t: tok = x
 cl.run(tok)
