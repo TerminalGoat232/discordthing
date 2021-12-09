@@ -134,9 +134,9 @@ cl.remove_command("help")
 async def help(ctx):
 	emb = discord.Embed(
 		title="_*Bot commands*_ :", color=0xfbf8b7, 
-		description= f"_Made By TerminalGoat#0948_\n [[{dt.datetime.utcnow()}]]",
+		description= f"[[{dt.datetime.utcnow()}]]",
 		)
-	emb.set_image(url='https://media.discordapp.net/attachments/875326852418371605/916594141360709642/z.png')
+	emb.set_image(url='')
 	emb.add_field(
 		name="**Moderation:**",
 		value=f"```re\n> mute\n> unmute\n> kick\n> AddBadw\n```\n **Event [Still working on]:**\n ```re\n> AddEvent[datetime][event]\n> EventToday\n```\n**Math:**\n```re\n> Math[Eq]\n> STR2ASCII[texts]\n> STR2BIN[texts]\n> ASCII2STR[ASCII]\n> BIN2STR[Binary]\n```\n ")
@@ -151,6 +151,7 @@ async def help(ctx):
 		name="Info",
 		value="```re\n> help [show this commands board]\n> ?SPrefix ( show SERVERS prefixs >;] ) \n```"
 		)
+	emb.set_footer(text=f"_Bot Made By TerminalGoat#0948_",icon_url="https://cdn.discordapp.com/app-icons/875286348951592981/682a085c987b8f66c9cabb68822e593d.png")
 	await ctx.send(embed=emb)
 @cl.command(name="AddEvent")
 async def AddEvent(ctx,date,*,event):
@@ -580,12 +581,46 @@ async def BIN2STR(ctx,*,bi):
 	await ctx.send(embed=discord.Embed(title="Here's your output [BINARY --> TEXT]:", 
 		description=f" ```py\n >_ {result}```",
 		color=0xfbf8b7))
+ans=0
+calc =0
+a = 1
 @cl.command(name="Math")
-async def Math(ctx,*,val):
-	calc = eval(val)
-	await ctx.send(embed=discord.Embed(title="Here's your calculation result:", 
-		description=f"```py\n >_ {calc}```",
-		color=0x48f898))
+async def Math(ctx,*,val:str):
+	global ans,calc
+	try:
+		calc = eval(val)
+		ans = calc
+		a = 1
+	except ZeroDivisionError:
+		await ctx.send(embed=discord.Embed(title="ERROR! ;/", 
+		description=f"```Cannot divide by zero!```",
+		color=0xff8c8c))
+		a = 0
+
+	except ValueError:
+		await ctx.send(embed=discord.Embed(title="ERROR! ;/", 
+		description=f"```Bad Value!```",
+		color=0xff8c8c))
+		a = 0
+
+	
+	except SyntaxError:
+		await ctx.send(embed=discord.Embed(title="ERROR! ;/", 
+		description=f"```Syntax Error!```",
+		color=0xff8c8c))
+		a = 0
+	except Exception:
+		cc = val.lower().replace(' ',',').split(',')
+		for x in range(0,len(cc)):
+			if cc[x].lower() == "ans":
+				cc[x] = ans
+		vb = ''.join(cc)
+		calc = eval(vb)
+	if a == 1:
+		await ctx.send(embed=discord.Embed(title="Here's your calculation result:", 
+			description=f"```py\n >_ {calc}```",
+			color=0x48f898))
+
 @cl.command(name="Reverse")
 async def Reverse(ctx,*,wd):
 	await ctx.send(f"{wd[::-1]}")
@@ -650,10 +685,8 @@ async def on_message(message):
 	    return
 	if message.content.lower() == 'hello' or message.content.lower() == 'hi' or message.content.lower() == 'lô':
 	    await message.channel.send(rd.choice(a))
-
 	if message.content.lower() == "!wake":
 		await message.delete()
-
 		quit()
 	if message.content.startswith('~RunLk='):
 		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(message.content[len('~RunLk')+1:].format(message))
