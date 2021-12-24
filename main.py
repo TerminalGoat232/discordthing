@@ -10,6 +10,7 @@ from discord.voice_client import VoiceClient
 import asyncio as asc
 import json as js
 from math import *
+from amogus import *
 from numpy import *
 import youtube_dl as dl
 from discord.ext.commands import has_permissions, bot_has_permissions
@@ -76,7 +77,7 @@ class MainPlay(discord.PCMVolumeTransformer):
 		fname = data['url'] if Strm else ydl.prepare_filename(data)
 		return cls(discord.FFmpegPCMAudio(fname, **ffmpeg_options), data=data)
 
-a = ["Hi", "Hello", "Zdravstvuyte", "Hemllo", "ok", ":>", 'hemllo', 'u r welcome', "lô"]
+a = ["Hi", "Hello", "Zdravstvuyte", "Hemllo", "ok", ":>", 'hemllo', 'u r welcome', ]
 ngu = ["Minecraft","0xfbf8b7","Nothing", ":l", "con chos", "Amongus", "Mountaindew Valley","Undertale","Deltarune","Getting over that shit","amongus fly by ;]","YOUR MOM!","Crab Game","Muck","OwO","UwU","Prizmatic Shard"]
 
 @cl.event
@@ -596,14 +597,11 @@ async def Math(ctx,*,val:str):
 		description=f"```Cannot divide by zero!```",
 		color=0xff8c8c))
 		a = 0
-
 	except ValueError:
 		await ctx.send(embed=discord.Embed(title="ERROR! ;/", 
 		description=f"```Bad Value!```",
 		color=0xff8c8c))
 		a = 0
-
-	
 	except SyntaxError:
 		await ctx.send(embed=discord.Embed(title="ERROR! ;/", 
 		description=f"```Syntax Error!```",
@@ -620,7 +618,44 @@ async def Math(ctx,*,val:str):
 		await ctx.send(embed=discord.Embed(title="Here's your calculation result:", 
 			description=f"```py\n >_ {calc}```",
 			color=0x48f898))
+# cvt1=0
+# cvt2=0
+# @cl.command(name="ConvertU")
+# async def ConvertU(ctx, para,*,un:float ):
+# 	global cvt1,cvt2
+# 	a1 = ["km->m","kg->g",'kw->w','kj->j','m->mm','g->mg']
+# 	a2 = ["m->km","g->kg",'w->kw','j->kj','mm->m','mg->g']
+# 	for x in a1:
+# 		if para.lower() == x:
+# 			cvt1 = un*1000
+# 		break
+# 		await ctx.send(embed=discord.Embed(title=f"{para.lower()}", 
+# 			description=f"{cvt1}{para[3]+para[4]}",
+# 			color=0xfbf8b7))
+# 	for x1 in a2:
+# 		if para.lower() == x1:
+# 			cvt2 = un/1000
+# 		break
+# 	await ctx.send(embed=discord.Embed(title=f"{para.lower()}", 
+# 		description=f"{cvt2}{para[3]+para[4]}",
+# 		color=0xfbf8b7))
+@cl.command(name="TmdEC")
+async def TmdEC(ctx,dly=0.5,*,tc):
+	await ctx.message.delete()
+	msg = await ctx.send("‎")
+	xs = ''
+	for bb in tc:
+		xs += bb
+		await msg.edit(content=f"{xs}")
+		await asc.sleep(dly)
 
+@cl.command(name="Susify")
+async def Susify(ctx, *, wd2):
+	sus = amogusify(wd2,True)
+	if wd2.lower() == "your self" or wd2.lower() == "ur self":
+		cus =["Im already sus ig", "RetardGus","you sus",'im sus']
+		sus = rd.choice(cus) 
+	await ctx.send(sus)
 @cl.command(name="Reverse")
 async def Reverse(ctx,*,wd):
 	await ctx.send(f"{wd[::-1]}")
