@@ -2,10 +2,12 @@ import discord
 from discord import Member
 from discord.ext import commands, tasks
 import os
+from io import BytesIO
 import random as rd
 import codecs
 import webbrowser as w 
-from on import live
+from PIL import Image
+import PIL.ImageOps
 from discord.voice_client import VoiceClient
 import asyncio as asc
 import json as js
@@ -102,12 +104,14 @@ async def on_ready():
 medvar = 1
 async def CheckEvents():
 	global medvar
+
 	while 1:
 		# print(">_", medvar)
 		with open("evt.json","r") as m: mn = js.load(m)
 		dtt = date.today()
 		xk = dtt.strftime("%m/%d")
 		ff = list(xk)
+		# print(ff)
 		# print(xk)
 		for fh in range(0,len(mn["Events"])):   
 			gg = list(list(mn["Events"])[fh])
@@ -120,16 +124,19 @@ async def CheckEvents():
     			# await cl.get_channel(id = 887513361791717426).send("@everyone")
 				await cl.get_channel(id = 887513361791717426).send(embed=emb)
 				for x in range(0, len(ff)):
-					try:
+					try: 
 						mc = int(ff[4])+1
 						ff[4] = str(mc)
 						break
 					except:pass
+				# if xk == "12/31":
+				# 	ff == "01/01"
 			else: pass
 		if xk != ''.join(ff):medvar = 0
 		elif xk == ff: medvar = 1
 		# print(''.join(ff))
 		await asc.sleep(5)
+
 cl.remove_command("help")
 @cl.command(name="help")
 async def help(ctx):
@@ -648,7 +655,6 @@ async def TmdEC(ctx,dly=0.5,*,tc):
 		xs += bb
 		await msg.edit(content=f"{xs}")
 		await asc.sleep(dly)
-
 @cl.command(name="Susify")
 async def Susify(ctx, *, wd2):
 	sus = amogusify(wd2,True)
@@ -682,6 +688,25 @@ async def RNG(ctx,fro:int,to:int):
 		except asc.TimeoutError:
 			await cc.remove_reaction("🔁",ctx.author)
 		except: pass
+#process image thingy
+@cl.command(name="InvertUsr")
+async def InvertUsr(ctx, usr:Member = None):
+	if usr == None:
+		usr = ctx.author
+	cc = usr.avatar_url 
+	g = Image.open(BytesIO(await cc.read()))
+	res = Image.open(g).convert("RGBA")
+	res.save("cc.png")
+	await ctx.send(file=discord.File("cc.png"))
+	await ctx.message.delete()
+@cl.command(name="Avt")
+async def Avt(ctx,usr:Member = None):
+	if usr == None:
+		usr = ctx.author
+	get = usr.avatar_url
+	await ctx.send(get)
+
+
 @cl.event 
 @has_permissions(kick_members = True)
 @commands.has_permissions(manage_messages=True)
@@ -733,7 +758,10 @@ async def on_message(message):
 		p1 = message.content[len('?SearchGG')+1:].format(message)
 		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.google.com/search?q={p1}')
 	if message.content.startswith('~ShutdownC'):
-		os.system('shutdown /s /t 10')
+		try:
+			os.system('shutdown /s /t 10')
+		except:
+			os.system('shutdown now -h')
 		await message.delete()
 		await message.channel.send("i shat myself and i'm dying...")
 		print(message.content[len('~RunLk')+1:].format(message))
@@ -772,7 +800,7 @@ async def doingstuff():
 			await cl.change_presence(activity=discord.Game(f' \ud83c\udf82 !!EVENT TODAY!!: {g} '))
 		elif xk != list(mn["Events"])[fh] : await cl.change_presence(activity=discord.Game(rd.choice(ngu)))
 
-live()
+
 with open("tok.txt","r") as t:
 	for x in t: tok = x
 cl.run(tok)
