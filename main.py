@@ -193,7 +193,7 @@ async def EventToday(ctx):
 @cl.command(name='unmute')
 @commands.has_permissions(manage_messages=True)
 async def unmute(ctx, member: discord.Member):
-   mutedRole = discord.utils.get(ctx.guild.roles, name="eats shit")
+   mutedRole = discord.utils.get(ctx.guild.roles, name="bonked")
 
    await member.remove_roles(mutedRole)
    await member.send(f" you have been unmuted from: - {ctx.guild.name}")
@@ -203,10 +203,10 @@ async def unmute(ctx, member: discord.Member):
 @commands.has_permissions(manage_messages=True)
 async def mute(ctx, member: discord.Member, *, reason):
     guild = ctx.guild
-    mutedRole = discord.utils.get(guild.roles, name="ngu")
+    mutedRole = discord.utils.get(guild.roles, name="bonked")
 
     if not mutedRole:
-        mutedRole = await guild.create_role(name="ngu")
+        mutedRole = await guild.create_role(name="bonked")
 
         for channel in guild.channels:
             await channel.set_permissions(mutedRole,
