@@ -748,23 +748,23 @@ async def on_message(message):
 	if message.content.lower() == "!wake":
 		await message.delete()
 		quit()
-	if message.content.startswith('~RunLk='):
-		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(message.content[len('~RunLk')+1:].format(message))
-		#print(message.content[len('~RunLk')+1:].format(message))
-	if message.content.startswith('?SearchYT='):
-		p = message.content[len('?SearchYT')+1:].format(message)
-		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.youtube.com/results?search_query={p}')
-	if message.content.startswith('?SearchGG='):
-		p1 = message.content[len('?SearchGG')+1:].format(message)
-		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.google.com/search?q={p1}')
-	if message.content.startswith('~ShutdownC'):
-		try:
-			os.system('shutdown /s /t 10')
-		except:
-			os.system('shutdown now -h')
-		await message.delete()
-		await message.channel.send("i shat myself and i'm dying...")
-		print(message.content[len('~RunLk')+1:].format(message))
+# 	if message.content.startswith('~RunLk='):
+# 		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(message.content[len('~RunLk')+1:].format(message))
+# 		#print(message.content[len('~RunLk')+1:].format(message))
+# 	if message.content.startswith('?SearchYT='):
+# 		p = message.content[len('?SearchYT')+1:].format(message)
+# 		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.youtube.com/results?search_query={p}')
+# 	if message.content.startswith('?SearchGG='):
+# 		p1 = message.content[len('?SearchGG')+1:].format(message)
+# 		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.google.com/search?q={p1}')
+# 	if message.content.startswith('~ShutdownC'):
+# 		try:
+# 			os.system('shutdown /s /t 10')
+# 		except:
+# 			os.system('shutdown now -h')
+# 		await message.delete()
+# 		await message.channel.send("i shat myself and i'm dying...")
+# 		print(message.content[len('~RunLk')+1:].format(message))
 	if message.content.startswith("?SPrefix"):
 		with open("prefix.json", "r") as c:
 			prefx = js.load(c)
