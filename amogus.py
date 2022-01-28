@@ -11,7 +11,6 @@ SUS_FACE = ["😳", "😎", "😭", "😠", "😤", "😂", "😥", "😱", "�
 
 
 def amogusify(text: str, emoji: bool = False) -> str:
-    """amogusify your text"""
     result = []
 
     if not text:
