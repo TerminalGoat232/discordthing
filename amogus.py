@@ -20,7 +20,7 @@ def amogusify(text: str, emoji: bool = False) -> str:
         rng_emoji = random.randint(1, 5)
         rng_emoji_count = random.randint(1, 3)
 
-        if word.startswith(":") and word.endswith(":"):  # skip emoji (?)
+        if word.startswith(":") and word.endswith(":"):  
             result.append(word)
             continue
 
