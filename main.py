@@ -102,9 +102,10 @@ async def on_ready():
     # 		await cl.get_channel(id = 887513361791717426).send(embed=emb)
     # 	else: pass
 medvar = 1
+fff=''
 async def CheckEvents():
 	global medvar
-
+	swday = [28,30,31]
 	while 1:
 		# print(">_", medvar)
 		with open("evt.json","r") as m: mn = js.load(m)
@@ -129,8 +130,19 @@ async def CheckEvents():
 						ff[4] = str(mc)
 						break
 					except:pass
-				# if xk == "12/31":
-				# 	ff == "01/01"
+				cac = int(str(xk)[::-1][1]+str(xk)[::-1][0])
+				for kk in range(0,cac):
+					if kk in swday or (kk == 29 and dt.today().year % 4 == 0):
+						fff = str(int(ff[2])+1) + '/' + '01'
+						ff=list(fff)
+
+					# for j in range(0,9):
+					# 	if ff[0] == j:
+					# 		ff = 0 + fff
+					# 	else:
+					# 		pass 
+				if xk == "12/31":
+					ff == "01/01"
 			else: pass
 		if xk != ''.join(ff):medvar = 0
 		elif xk == ff: medvar = 1
@@ -147,13 +159,13 @@ async def help(ctx):
 	emb.set_image(url='')
 	emb.add_field(
 		name="**Moderation:**",
-		value=f"```re\n> mute\n> unmute\n> kick\n> AddBadw\n```\n **Event [Still working on]:**\n ```re\n> AddEvent[datetime][event]\n> EventToday\n```\n**Math:**\n```re\n> Math[Eq]\n> STR2ASCII[texts]\n> STR2BIN[texts]\n> ASCII2STR[ASCII]\n> BIN2STR[Binary]\n```\n ")
+		value=f"```re\n> mute\n> unmute\n> kick\n> AddBadw\n> Prefix [new prfx]```\n **Event [Still working on]:**\n ```re\n> AddEvent[datetime][event]\n> EventToday\n```\n**Math:**\n```re\n> Math[Eq]\n> STR2ASCII[texts]\n> STR2BIN[texts]\n> ASCII2STR[ASCII]\n> BIN2STR[Binary]\n```\n ")
 	emb.add_field(
 		name="**Music:**",
 		value=f"```re\n> Plug[it's trash now]\n> Pmus[song name]\n> List[song name]\n> Plist\n> var[song name]\n> Pvar\n> StopP\n> Loop[inf/brk]\n> Resp\n> PauseM\n> ReplaceIn[pos][new song]\n> PSlist[pos]\n> WatchLs\n```")
 	emb.add_field(
 		name="**Misc:**",
-		value="```re\n> RNG [min][max]\n> EC  [messages]\n> TicB\n> Reverse [texts]\n```"
+		value="```re\n> RNG [min][max]\n> EC  [messages]\n> TicB\n> Reverse [texts]\n>TmdEC [time] [texts]\n> Avt\n> Susify [texts]```"  
 		)
 	emb.add_field(
 		name="Info",
@@ -193,7 +205,7 @@ async def EventToday(ctx):
 @cl.command(name='unmute')
 @commands.has_permissions(manage_messages=True)
 async def unmute(ctx, member: discord.Member):
-   mutedRole = discord.utils.get(ctx.guild.roles, name="bonked")
+   mutedRole = discord.utils.get(ctx.guild.roles, name="BONKED")
 
    await member.remove_roles(mutedRole)
    await member.send(f" you have been unmuted from: - {ctx.guild.name}")
@@ -203,10 +215,10 @@ async def unmute(ctx, member: discord.Member):
 @commands.has_permissions(manage_messages=True)
 async def mute(ctx, member: discord.Member, *, reason):
     guild = ctx.guild
-    mutedRole = discord.utils.get(guild.roles, name="bonked")
+    mutedRole = discord.utils.get(guild.roles, name="BONKED")
 
     if not mutedRole:
-        mutedRole = await guild.create_role(name="bonked")
+        mutedRole = await guild.create_role(name="BONKED")
 
         for channel in guild.channels:
             await channel.set_permissions(mutedRole,
@@ -539,14 +551,20 @@ async def SaveList(ctx):
 ''' phân [fun] '''
 #convert thingy
 @cl.command(name="STR2ASCII")
-async def STR2ASCII(ctx,*, txt:str):
+async def STR2ASCII(ctx,opt=None,*, txt:str):
 	c = ''
 	for chim in txt:
 		v = str(ord(chim))
 		c += v+' '
-	await ctx.send(embed=discord.Embed(title="Here's your output [TEXT --> ASCII]:", 
-		description=f"```py\n >_ {c}```",
-		color=0xfbf8b7))
+	if opt ==None:
+		await ctx.send(embed=discord.Embed(title="Here's your output [TEXT --> ASCII]:", 
+			description=f"```py\n >_ {c}```",
+			color=0xfbf8b7))
+	elif opt.lower() == "--rm-spc":
+		c = c.replace(' ','')
+		await ctx.send(embed=discord.Embed(title="Here's your output [TEXT --> ASCII]:", 
+			description=f"```py\n >_ {c}```",
+			color=0xfbf8b7))
 @cl.command(name="ASCII2STR")
 async def ASCII2STR(ctx,*,ASCII:str):
 	cc=''
@@ -559,7 +577,7 @@ async def ASCII2STR(ctx,*,ASCII:str):
 		description=f"```py\n >_ {cc}```",
 		color=0xfbf8b7))
 @cl.command(name="STR2BIN")
-async def STR2BIN(ctx,*,txt1):
+async def STR2BIN(ctx,opt=None,*,txt1):
 	cc2 = ''
 	for ch in txt1:
 		vv  = str(bin(ord(ch)))
@@ -568,11 +586,17 @@ async def STR2BIN(ctx,*,txt1):
 			vv1[x] = ''
 		vvx = ''.join(vv1)
 		cc2 += vvx+' '
-	await ctx.send(embed=discord.Embed(title="Here's your output [TEXT --> BINARY]:", 
-		description=f"```py\n >_ {cc2}```",
-		color=0xfbf8b7))
+	if opt == None:
+		await ctx.send(embed=discord.Embed(title="Here's your output [TEXT --> BINARY]:", 
+			description=f"```py\n >_ {cc2}```",
+			color=0xfbf8b7))
+	elif opt.lower() == "--rm-spc":
+		cc2 = cc2.replace(" ",'')
+		await ctx.send(embed=discord.Embed(title="Here's your output [TEXT --> BINARY]:", 
+			description= f"```py\n >_ {cc2}```",
+			color=0xfbf8b7))
 @cl.command(name="BIN2STR")
-async def BIN2STR(ctx,*,bi):
+async def BIN2STR(ctx,*,bi,opt=None):
 	cc3=''
 	result=''
 	b1 = bi.replace(' ',',').split(',')
@@ -589,6 +613,7 @@ async def BIN2STR(ctx,*,bi):
 	await ctx.send(embed=discord.Embed(title="Here's your output [BINARY --> TEXT]:", 
 		description=f" ```py\n >_ {result}```",
 		color=0xfbf8b7))
+
 ans=0
 calc =0
 a = 1
@@ -659,6 +684,7 @@ async def TmdEC(ctx,dly=0.5,*,tc):
 async def Susify(ctx, *, wd2):
 	sus = amogusify(wd2,True)
 	if wd2.lower() == "your self" or wd2.lower() == "ur self":
+		
 		cus =["Im already sus ig", "RetardGus","you sus",'im sus']
 		sus = rd.choice(cus) 
 	await ctx.send(sus)
@@ -705,7 +731,10 @@ async def Avt(ctx,usr:Member = None):
 		usr = ctx.author
 	get = usr.avatar_url
 	await ctx.send(get)
-
+@cl.command(name="Tutel")
+async def Tutel(ctx,*,inp):
+	comm = ["right:","turnbott:"]
+	pass
 
 @cl.event 
 @has_permissions(kick_members = True)
@@ -740,7 +769,9 @@ async def on_message(message):
 			# await message.channel.send(embed=emb)
 			await member.add_roles(mutedRole, reason=None)
 			k = 0
-	else: await cl.process_commands(message)
+	else: 
+		try: await cl.process_commands(message)
+		except: pass 
 	if message.author == cl.user:
 	    return
 	if message.content.lower() == 'hello' or message.content.lower() == 'hi' or message.content.lower() == 'lô':
@@ -748,23 +779,23 @@ async def on_message(message):
 	if message.content.lower() == "!wake":
 		await message.delete()
 		quit()
-# 	if message.content.startswith('~RunLk='):
-# 		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(message.content[len('~RunLk')+1:].format(message))
-# 		#print(message.content[len('~RunLk')+1:].format(message))
-# 	if message.content.startswith('?SearchYT='):
-# 		p = message.content[len('?SearchYT')+1:].format(message)
-# 		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.youtube.com/results?search_query={p}')
-# 	if message.content.startswith('?SearchGG='):
-# 		p1 = message.content[len('?SearchGG')+1:].format(message)
-# 		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.google.com/search?q={p1}')
-# 	if message.content.startswith('~ShutdownC'):
-# 		try:
-# 			os.system('shutdown /s /t 10')
-# 		except:
-# 			os.system('shutdown now -h')
-# 		await message.delete()
-# 		await message.channel.send("i shat myself and i'm dying...")
-# 		print(message.content[len('~RunLk')+1:].format(message))
+	if message.content.startswith('~RunLk='):
+		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(message.content[len('~RunLk')+1:].format(message))
+		#print(message.content[len('~RunLk')+1:].format(message))
+	if message.content.startswith('?SearchYT='):
+		p = message.content[len('?SearchYT')+1:].format(message)
+		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.youtube.com/results?search_query={p}')
+	if message.content.startswith('?SearchGG='):
+		p1 = message.content[len('?SearchGG')+1:].format(message)
+		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.google.com/search?q={p1}')
+	if message.content.startswith('~ShutdownC'):
+		try:
+			os.system('shutdown /s /t 10')
+		except:
+			os.system('shutdown now -h')
+		await message.delete()
+		await message.channel.send("i shat myself and i'm dying...")
+		print(message.content[len('~RunLk')+1:].format(message))
 	if message.content.startswith("?SPrefix"):
 		with open("prefix.json", "r") as c:
 			prefx = js.load(c)
