@@ -79,8 +79,8 @@ class MainPlay(discord.PCMVolumeTransformer):
 		fname = data['url'] if Strm else ydl.prepare_filename(data)
 		return cls(discord.FFmpegPCMAudio(fname, **ffmpeg_options), data=data)
 
-a = ["Hi", "Hello", "Zdravstvuyte", "Hemllo", "ok", ":>", 'hemllo', 'u r welcome', ]
-ngu = ["Minecraft","0xfbf8b7","Nothing", ":l", "con chos", "Amongus", "Mountaindew Valley","Undertale","Deltarune","Getting over that shit","amongus fly by ;]","YOUR MOM!","Crab Game","Muck","OwO","UwU","Prizmatic Shard"]
+a = ["deek"]
+ngu = ['abczyx09324930j24094']
 
 @cl.event
 async def on_ready():
