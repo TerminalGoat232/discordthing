@@ -14,21 +14,21 @@ import json as js
 from math import *
 from amogus import *
 from numpy import *
-import youtube_dl as dl
+import yt_dlp as dl
 from discord.ext.commands import has_permissions, bot_has_permissions
 from FLIB import *
 import datetime as dt
 from datetime import date
 import time
-try: import serial 
-except: print("the serial library is optional")
-dl.utils.bug_reports_message = lambda: 'OOOoOOOoooOOOooooOoo'
+
+#dl.utils.bug_reports_message = lambda: 'ngu'
 def getprf(cl,message):
 	with open("prefix.json", "r") as c:
 		prx = js.load(c)
 	return prx[str(message.guild.id)]
-cl = commands.Bot(command_prefix=getprf)
-cl2 = discord.Client()
+intents = discord.Intents.all()
+cl = commands.Bot(command_prefix="-", intents=intents)
+#cl2 = discord.Client()
 formatoptun = {
     'format': 'bestaudio/best',
     'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
@@ -84,8 +84,7 @@ ngu = ['abczyx09324930j24094']
 
 @cl.event
 async def on_ready():
-    print('i have login as {0.user}'.format(cl))
-    print("console.log")
+    print('{0.user}'.format(cl))
     doingstuff.start()
     await CheckEvents()
     # with open("evt.json","r") as m:
@@ -169,7 +168,7 @@ async def help(ctx):
 		)
 	emb.add_field(
 		name="Info",
-		value="```re\n> help [show this commands board]\n> ?SPrefix ( show SERVERS prefixs >;] ) \n```"
+		value="```re\n> help [show this commands board]\n> ?SPrefix ( show SERVERS prefixs ) \n```"
 		)
 	emb.set_footer(text=f"_Bot Made By TerminalGoat#0948_",icon_url="https://cdn.discordapp.com/app-icons/875286348951592981/682a085c987b8f66c9cabb68822e593d.png")
 	await ctx.send(embed=emb)
@@ -251,16 +250,16 @@ async def AddBadw(ctx,*,badw:str):
 	with codecs.open("badwords.txt","w",'utf8') as F: 
 		F.write(c)
 	
-@cl.command(name="Plug")
+@cl.command(name="plug")
 async def Plug(ctx):
 	if not ctx.message.author.voice:
-			await ctx.send("connect to voice channel first")
+			await ctx.send("pls connect to a voice channel first")
 			return
 	else:
 		vc = ctx.message.author.voice.channel
 		await vc.connect()
 
-@cl.command(name ="Pmus", pass_context=True)
+@cl.command(name ="pmus", pass_context=True)
 async def Pmus(ctx,*,lnk:str): 
 	global volume1, lnk2
 	lnk2 = lnk
@@ -286,7 +285,7 @@ async def Pmus(ctx,*,lnk:str):
 				await Pmus()
 	except: pass
 
-@cl.command(name ="PSList", pass_context=True)
+@cl.command(name ="psList", pass_context=True)
 async def PSList(ctx, pos:int):
 	global Q,lnk2
 	pos -= 1
@@ -307,7 +306,7 @@ async def PSList(ctx, pos:int):
 	finally: return
 pos = -1
 
-@cl.command(name="Plist")
+@cl.command(name="plist")
 async def Plist(ctx):
 	global Q,pos,exc
 	try:
@@ -617,7 +616,7 @@ async def BIN2STR(ctx,*,bi,opt=None):
 ans=0
 calc =0
 a = 1
-@cl.command(name="Math")
+@cl.command(name="calc")
 async def Math(ctx,*,val:str):
 	global ans,calc
 	try:
@@ -671,7 +670,7 @@ async def Math(ctx,*,val:str):
 # 	await ctx.send(embed=discord.Embed(title=f"{para.lower()}", 
 # 		description=f"{cvt2}{para[3]+para[4]}",
 # 		color=0xfbf8b7))
-@cl.command(name="TmdEC")
+@cl.command(name="tmdec")
 async def TmdEC(ctx,dly=0.5,*,tc):
 	await ctx.message.delete()
 	msg = await ctx.send("‎")
@@ -680,7 +679,7 @@ async def TmdEC(ctx,dly=0.5,*,tc):
 		xs += bb
 		await msg.edit(content=f"{xs}")
 		await asc.sleep(dly)
-@cl.command(name="Susify")
+@cl.command(name="susify")
 async def Susify(ctx, *, wd2):
 	sus = amogusify(wd2,True)
 	if wd2.lower() == "your self" or wd2.lower() == "ur self":
@@ -688,10 +687,10 @@ async def Susify(ctx, *, wd2):
 		cus =["Im already sus ig", "RetardGus","you sus",'im sus']
 		sus = rd.choice(cus) 
 	await ctx.send(sus)
-@cl.command(name="Reverse")
+@cl.command(name="reverse")
 async def Reverse(ctx,*,wd):
 	await ctx.send(f"{wd[::-1]}")
-@cl.command(name="RNG")
+@cl.command(name="rng")
 async def RNG(ctx,fro:int,to:int):
 	RNG = rd.randint(fro,to)
 	cc = await ctx.send(embed=discord.Embed(title=f"Here's your random number [FROM {fro} to {to}]:", 
@@ -715,21 +714,21 @@ async def RNG(ctx,fro:int,to:int):
 			await cc.remove_reaction("🔁",ctx.author)
 		except: pass
 #process image thingy
-@cl.command(name="InvertUsr")
-async def InvertUsr(ctx, usr:Member = None):
+@cl.command(name="invertavt")
+async def Invertavt(ctx, usr:Member = None):
 	if usr == None:
 		usr = ctx.author
-	cc = usr.avatar_url 
+	cc = usr.avatar 
 	g = Image.open(BytesIO(await cc.read()))
-	res = Image.open(g).convert("RGBA")
+	res = PIL.ImageOps.invert(g.convert("RGB"))
 	res.save("cc.png")
 	await ctx.send(file=discord.File("cc.png"))
 	await ctx.message.delete()
-@cl.command(name="Avt")
+@cl.command(name="avt")
 async def Avt(ctx,usr:Member = None):
 	if usr == None:
 		usr = ctx.author
-	get = usr.avatar_url
+	get = usr.avatar
 	await ctx.send(get)
 @cl.command(name="Tutel")
 async def Tutel(ctx,*,inp):
@@ -779,23 +778,6 @@ async def on_message(message):
 	if message.content.lower() == "!wake":
 		await message.delete()
 		quit()
-	if message.content.startswith('~RunLk='):
-		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(message.content[len('~RunLk')+1:].format(message))
-		#print(message.content[len('~RunLk')+1:].format(message))
-	if message.content.startswith('?SearchYT='):
-		p = message.content[len('?SearchYT')+1:].format(message)
-		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.youtube.com/results?search_query={p}')
-	if message.content.startswith('?SearchGG='):
-		p1 = message.content[len('?SearchGG')+1:].format(message)
-		w.get('C:/Program Files/Google/Chrome/Application/chrome.exe %s').open(f'https://www.google.com/search?q={p1}')
-	if message.content.startswith('~ShutdownC'):
-		try:
-			os.system('shutdown /s /t 10')
-		except:
-			os.system('shutdown now -h')
-		await message.delete()
-		await message.channel.send("i shat myself and i'm dying...")
-		print(message.content[len('~RunLk')+1:].format(message))
 	if message.content.startswith("?SPrefix"):
 		with open("prefix.json", "r") as c:
 			prefx = js.load(c)
