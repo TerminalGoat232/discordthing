@@ -33,7 +33,6 @@ intents.presences = True
 intents.message_content = True 
 cl = commands.Bot(command_prefix="-", intents=intents)
 
-#cl2 = discord.Client()
 ydl_options= {
     'format': 'bestaudio/best',
     'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
@@ -58,7 +57,6 @@ ydl = dl.YoutubeDL(ydl_options)
 k = 0
 volume1 = 1
 StBd = []
-exc = 1
 Q = []
 lnk2 = ''
 with codecs.open('badwords.txt', 'r', 'utf8') as F:
@@ -162,10 +160,10 @@ async def help(ctx):
     emb.set_image(url='')
     emb.add_field(
         name="**Moderation:**",
-        value=f"```re\n> mute\n> unmute\n> kick\n> AddBadw\n> Prefix [new prfx]```\n **Event [Still working on]:**\n ```re\n> AddEvent[datetime][event]\n> EventToday\n```\n**Math:**\n```re\n> Math[Eq]\n> STR2ASCII[texts]\n> STR2BIN[texts]\n> ASCII2STR[ASCII]\n> BIN2STR[Binary]\n```\n ")
+        value=f"```re\n> mute\n> unmute\n> kick\n> AddBadw\n> Prefix [new prfx]```\n **Event [Still working on]:**\n ```re\n> AddEvent[datetime][event]\n> EventToday\n```\n**Math:**\n```re\n> calc[Eq]\n> STR2ASCII[texts]\n> STR2BIN[texts]\n> ASCII2STR[ASCII]\n> BIN2STR[Binary]\n```\n ")
     emb.add_field(
         name="**Music:**",
-        value=f"```re\n> Plug[it's trash now]\n> Pmus[song name]\n> List[song name]\n> Plist\n> var[song name]\n> Pvar\n> StopP\n> Loop[inf/brk]\n> Resp\n> PauseM\n> ReplaceIn[pos][new song]\n> PSlist[pos]\n> WatchLs\n```")
+        value=f"```re\n> plug[it's trash now]\n> pmus[song name]\n> list[song name]\n> play_list\n> var[song name]\n> Pvar\n> stop_playing\n> loop[inf/brk]\n> resume_playing\n> PauseM\n> replace_in[pos][new song]\n> ps_list[pos]\n> WatchLs\n```")
     emb.add_field(
         name="**Misc:**",
         value="```re\n> RNG [min][max]\n> EC  [messages]\n> TicB\n> Reverse [texts]\n>TmdEC [time] [texts]\n> Avt\n> Susify [texts]```"  
@@ -302,20 +300,21 @@ async def Plist(ctx):
     global Q,pos
     if not ctx.message.author.voice:
         await ctx.send("connect to a voice channel first pls")
-        return
+        return 
     else:
-        vc = ctx.message.author.voice.channel
-        await vc.connect()
+        try:
+            vc = ctx.message.author.voice.channel
+            await vc.connect()
+        except:
+            pass
         while 1:
             if not ctx.voice_client.is_playing():
                 pos += 1
-                await playing_music(ctx, Q[pos])
-            if pos > len(Q):
-                print("what")
-                await ctx.send("OUT OF SONG")
-                pos = -1
-                break 
-            #pos -= 1
+                if pos > len(Q)-1: 
+                    await ctx.send("OUT OF SONG")
+                    pos = -1
+                    break 
+                else: await playing_music(ctx, Q[pos])
             await asc.sleep(.5)
 
 @cl.command(name="kick")
