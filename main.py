@@ -5,7 +5,6 @@ import os
 from io import BytesIO
 import random as rd
 import codecs
-import webbrowser as w 
 from PIL import Image
 import PIL.ImageOps
 from discord.voice_client import VoiceClient
@@ -300,7 +299,7 @@ async def Plist(ctx):
     global Q,pos
     if not ctx.message.author.voice:
         await ctx.send("connect to a voice channel first pls")
-        return 
+        return  
     else:
         try:
             vc = ctx.message.author.voice.channel
@@ -311,7 +310,7 @@ async def Plist(ctx):
             if not ctx.voice_client.is_playing():
                 pos += 1
                 if pos > len(Q)-1: 
-                    await ctx.send("OUT OF SONG")
+                    await ctx.send("no more muzik for ya...")
                     pos = -1
                     break 
                 else: await playing_music(ctx, Q[pos])
@@ -329,7 +328,7 @@ async def kick(ctx, name:Member, *, reason:str):
             await ctx.send(embed=emb)
 
 @cl.command(name="prefix")
-#Coiashdoidhoioiscoiscsndnclkdmclkcmlmcccccccccccccccccccccccccccccccccccccc
+
 async def Prefix(ctx, prf:str):
     
     if len(prf) == 1:
@@ -341,14 +340,14 @@ async def Prefix(ctx, prf:str):
         await ctx.send(f"*changed prefix to {prf}*")
     else:
         await ctx.send("**only accept prefix as a symbol or character**")
-#Coiashdoidhoioiscoiscsndnclkdmclkcmlmcccccccccccccccccccccccccccccccccccccc
+
 @cl.event
 async def on_guild_join(guild):
     with open("prefix.json", "r") as c:
         prx = js.load(c)
     prx[str(guild.id)] = "-"
     with open("prefix.json", "w") as c:
-        js.dump(prx,c,indent=5)
+        js.dump(prx,c,indent=4)
 
 @cl.command(name ="play_again", pass_context=True)
 async def Pagain(ctx):
@@ -393,12 +392,12 @@ async def Loop(ctx, t:str):
         try:
             await playing_music(ctx,lnk2)
             if v == 1:
-                # await ctx.send('the loop has been broken')
                 break
         except: pass
         await asc.sleep(.1)
 
 #TODO: respond with full song name instead of raw user input prompt
+#      multi-threading or so called idk asndoiasodosdn
 @cl.command(name="list")
 async def List(ctx,*,lnk11):
     global Q
@@ -423,35 +422,32 @@ async def  WatchLs(ctx):
 
 @cl.command(name="pause")
 async def PauseM(ctx):
-    global exc
     abc = ctx.message.guild
     vc = abc.voice_client
-    exc = 0
-    print(exc)
     vc.pause()
+
 sttcolor = 0
 @cl.command(name="tick")
 async def TicB(ctx):
     global sttcolor
-    stt = time.monotonic()
-
+    send = time.monotonic()
     msg = await ctx.send("[0]Pinging...")
-    send = time.monotonic() - stt
+    send_time = time.monotonic() - send
 
-    rac = time.monotonic()
+    react = time.monotonic()
     await msg.add_reaction("\U0001f44d")
-    ract = time.monotonic() - rac 
+    react_time = time.monotonic() - react 
 
-    edtt = time.monotonic()
+    edit = time.monotonic()
     await msg.edit(content="[1]Pinging...")
-    edt = time.monotonic() - edtt
+    edit_time = time.monotonic() - edit
 
-    delt = time.monotonic()
+    delete = time.monotonic()
     await msg.delete()
-    deltt = time.monotonic() - delt
-    a = int(cl.latency * 1000)
-    nw = dt.datetime.utcnow()
-    ave = round((1000*(send+deltt+ract+edt)+a)/5)
+    delete_time = time.monotonic() - delete
+    bot_latency = int(cl.latency * 1000)
+    current_dt = dt.datetime.utcnow()
+    ave = round((1000*(send_time+delete_time+react_time+edit_time)+bot_latency)/5)
     print("average ping >_ ", ave)
     if ave <= 500: sttcolor = 0xbff9d2 #stronk
     elif ave > 500 and ave <= 1500: sttcolor = 0xffffd7 #nỏm
@@ -459,12 +455,12 @@ async def TicB(ctx):
     await ctx.send(
         embed = discord.Embed(
             title="BONK! :l ", description=(
-                f"**Send:** ```>_ { send*1000:.1f}ms ``` \n"
-                f"**Bot Latency:** ```>_ { a}ms ``` \n"
-                f"**Delete:** ```>_ { deltt*1000:.1f}ms ```\n"
-                f"**React:** ```>_ { ract*1000:.1f}ms ```\n"
-                f"**Edit:** ```>_ { edt*1000:.1f}ms ```\n"
-                f"_Finished: {nw}_"
+                f"**Send:** ```>_ { send_time*1000:.1f}ms ``` \n"
+                f"**Bot Latency:** ```>_ { bot_latency}ms ``` \n"
+                f"**Delete:** ```>_ { delete_time*1000:.1f}ms ```\n"
+                f"**React:** ```>_ { react_time*1000:.1f}ms ```\n"
+                f"**Edit:** ```>_ { edit_time*1000:.1f}ms ```\n"
+                f"_Finished: {current_dt}_"
                 ),color=sttcolor))
 @commands.has_permissions(manage_messages=True)
 @cl.command(name="ec", pass_context=True)
@@ -538,7 +534,7 @@ async def ASCII2STR(ctx,*,ASCII:str):
         description=f"```py\n >_ {cc}```",
         color=0xfbf8b7))
 @cl.command(name="STR2BIN")
-async def STR2BIN(ctx,opt=None,*,txt1):
+async def STR2BIN(ctx,opt: str | None,*,txt1):
     cc2 = ''
     for ch in txt1:
         vv  = str(bin(ord(ch)))
@@ -568,49 +564,53 @@ async def BIN2STR(ctx,*,bi,opt=None):
     for bb in ub:
         try:
             fx = ''.join(bb)
-            cvbt = chr(int(fx[:0xFF].encode("UTF-8"),2))
+            cvbt = chr(int(fx[:255].encode("UTF-8"),2))
             result += cvbt
         except:pass
     await ctx.send(embed=discord.Embed(title="Here's your output [BINARY --> TEXT]:", 
         description=f" ```py\n >_ {result}```",
         color=0xfbf8b7))
 
-ans=0
-calc =0
-a = 1
 @cl.command(name="calc")
 async def Math(ctx,*,val:str):
-    global ans,calc
+    ans=0
+    calc =0
     try:
         calc = eval(val)
         ans = calc
-        a = 1
     except ZeroDivisionError:
-        await ctx.send(embed=discord.Embed(title="ERROR! ;/", 
+        await ctx.send(embed=discord.Embed(title="ERROR! :/", 
         description=f"```Cannot divide by zero!```",
         color=0xff8c8c))
-        a = 0
+        return 
     except ValueError:
-        await ctx.send(embed=discord.Embed(title="ERROR! ;/", 
+        await ctx.send(embed=discord.Embed(title="ERROR! :/", 
         description=f"```Bad Value!```",
         color=0xff8c8c))
-        a = 0
+        return 
     except SyntaxError:
-        await ctx.send(embed=discord.Embed(title="ERROR! ;/", 
+        await ctx.send(embed=discord.Embed(title="ERROR! :/", 
         description=f"```Syntax Error!```",
         color=0xff8c8c))
-        a = 0
+        return
+    except NameError:
+        await ctx.send(embed=discord.Embed(title="ERROR! :/", 
+        description=f"```What?```",
+        color=0xff8c8c))
+        return 
     except Exception:
         cc = val.lower().replace(' ',',').split(',')
-        for x in range(0,len(cc)):
-            if cc[x].lower() == "ans":
-                cc[x] = ans
-        vb = ''.join(cc)
-        calc = eval(vb)
-    if a == 1:
-        await ctx.send(embed=discord.Embed(title="Here's your calculation result:", 
-            description=f"```py\n >_ {calc}```",
-            color=0x48f898))
+        for x in cc:
+            if x.lower() == "ans":
+                x = ans
+        calc = eval(''.join(cc))
+    await ctx.send(
+        embed=discord.Embed(
+            title="Here's your calculation result:", 
+            description=f"```py\n > {calc}```",
+            color=0x48f898
+        )
+    )
 # cvt1=0
 # cvt2=0
 # @cl.command(name="ConvertU")
@@ -649,11 +649,13 @@ async def Susify(ctx, *, wd2):
         cus =["Im already sus ig", "RetardGus","you sus",'im sus']
         sus = rd.choice(cus) 
     await ctx.send(sus)
+
 @cl.command(name="reverse")
 async def Reverse(ctx,*,wd):
     await ctx.send(f"{wd[::-1]}")
+
 @cl.command(name="rng")
-async def RNG(ctx,fro:int,to:int):
+async def RNG(ctx,fro:int,to:int,lifetime=120):
     RNG = rd.randint(fro,to)
     cc = await ctx.send(embed=discord.Embed(title=f"Here's your random number [FROM {fro} to {to}]:", 
         description=f" ```py\n >_ {RNG}```",
@@ -663,7 +665,7 @@ async def RNG(ctx,fro:int,to:int):
         return u != cl.user and str(rec.emoji) == "🔁"
     while 1:
         try:
-            rec, u = await cl.wait_for("reaction_add", check=refresh, timeout=1)
+            rec, u = await cl.wait_for("reaction_add", check=refresh, timeout=120)
             if str(rec.emoji) == '🔁':
                 RNG = rd.randint(fro,to)
                 emb = discord.Embed(title=f"Here's your random number [FROM {fro} to {to}]:", 
@@ -674,7 +676,7 @@ async def RNG(ctx,fro:int,to:int):
 
         except asc.TimeoutError:
             await cc.remove_reaction("🔁",ctx.author)
-        except: pass
+
 #process image thingy
 @cl.command(name="invertavt")
 async def Invertavt(ctx, usr:Member = None):
